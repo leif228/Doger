@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dog.doger.app.business.repository.CargoMapper">
+  <resultMap id="BaseResultMap" type="com.dog.doger.app.business.entity.Cargo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cargo_name" jdbcType="VARCHAR" property="cargoName" />
+    <result column="cargo_no" jdbcType="VARCHAR" property="cargoNo" />
+    <result column="ori_price" jdbcType="REAL" property="oriPrice" />
+    <result column="sal_price" jdbcType="REAL" property="salPrice" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cargo_name, cargo_no, ori_price, sal_price, creat_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cargo
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from cargo
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dog.doger.app.business.entity.Cargo">
+    <selectKey  resultType="java.lang.Long" order="AFTER"
+                keyProperty="id">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into cargo (id, cargo_name, cargo_no,
+      ori_price, sal_price, creat_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{cargoName,jdbcType=VARCHAR}, #{cargoNo,jdbcType=VARCHAR}, 
+      #{oriPrice,jdbcType=REAL}, #{salPrice,jdbcType=REAL}, #{creatTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dog.doger.app.business.entity.Cargo">
+    <selectKey  resultType="java.lang.Long" order="AFTER"
+                keyProperty="id">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into cargo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cargoName != null">
+        cargo_name,
+      </if>
+      <if test="cargoNo != null">
+        cargo_no,
+      </if>
+      <if test="oriPrice != null">
+        ori_price,
+      </if>
+      <if test="salPrice != null">
+        sal_price,
+      </if>
+      <if test="creatTime != null">
+        creat_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="cargoName != null">
+        #{cargoName,jdbcType=VARCHAR},
+      </if>
+      <if test="cargoNo != null">
+        #{cargoNo,jdbcType=VARCHAR},
+      </if>
+      <if test="oriPrice != null">
+        #{oriPrice,jdbcType=REAL},
+      </if>
+      <if test="salPrice != null">
+        #{salPrice,jdbcType=REAL},
+      </if>
+      <if test="creatTime != null">
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dog.doger.app.business.entity.Cargo">
+    update cargo
+    <set>
+      <if test="cargoName != null">
+        cargo_name = #{cargoName,jdbcType=VARCHAR},
+      </if>
+      <if test="cargoNo != null">
+        cargo_no = #{cargoNo,jdbcType=VARCHAR},
+      </if>
+      <if test="oriPrice != null">
+        ori_price = #{oriPrice,jdbcType=REAL},
+      </if>
+      <if test="salPrice != null">
+        sal_price = #{salPrice,jdbcType=REAL},
+      </if>
+      <if test="creatTime != null">
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dog.doger.app.business.entity.Cargo">
+    update cargo
+    set cargo_name = #{cargoName,jdbcType=VARCHAR},
+      cargo_no = #{cargoNo,jdbcType=VARCHAR},
+      ori_price = #{oriPrice,jdbcType=REAL},
+      sal_price = #{salPrice,jdbcType=REAL},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+  <select id="findByCargoNo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cargo
+    where cargo_no = #{cargoNo}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from cargo
+    order by creat_time desc
+  </select>
+</mapper>

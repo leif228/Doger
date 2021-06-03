@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dog.doger.app.business.repository.StockpileMapper">
+  <resultMap id="BaseResultMap" type="com.dog.doger.app.business.entity.Stockpile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cargo_id" jdbcType="BIGINT" property="cargoId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="first_enter_date" jdbcType="TIMESTAMP" property="firstEnterDate" />
+    <result column="last_leave_date" jdbcType="TIMESTAMP" property="lastLeaveDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cargo_id, num, first_enter_date, last_leave_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from stockpile
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from stockpile
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dog.doger.app.business.entity.Stockpile">
+    insert into stockpile (id, cargo_id, num, 
+      first_enter_date, last_leave_date)
+    values (#{id,jdbcType=BIGINT}, #{cargoId,jdbcType=BIGINT}, #{num,jdbcType=INTEGER}, 
+      #{firstEnterDate,jdbcType=TIMESTAMP}, #{lastLeaveDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dog.doger.app.business.entity.Stockpile">
+    insert into stockpile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cargoId != null">
+        cargo_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="firstEnterDate != null">
+        first_enter_date,
+      </if>
+      <if test="lastLeaveDate != null">
+        last_leave_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="cargoId != null">
+        #{cargoId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="firstEnterDate != null">
+        #{firstEnterDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLeaveDate != null">
+        #{lastLeaveDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dog.doger.app.business.entity.Stockpile">
+    update stockpile
+    <set>
+      <if test="cargoId != null">
+        cargo_id = #{cargoId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="firstEnterDate != null">
+        first_enter_date = #{firstEnterDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastLeaveDate != null">
+        last_leave_date = #{lastLeaveDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dog.doger.app.business.entity.Stockpile">
+    update stockpile
+    set cargo_id = #{cargoId,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER},
+      first_enter_date = #{firstEnterDate,jdbcType=TIMESTAMP},
+      last_leave_date = #{lastLeaveDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+  <select id="findByCargoId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from stockpile
+    where cargo_id = #{cargoId}
+  </select>
+</mapper>

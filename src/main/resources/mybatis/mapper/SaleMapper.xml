@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dog.doger.app.business.repository.SaleMapper">
+  <resultMap id="BaseResultMap" type="com.dog.doger.app.business.entity.Sale">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+    <result column="total_price" jdbcType="REAL" property="totalPrice" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, creat_time, total_price
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sale
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sale
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dog.doger.app.business.entity.Sale">
+    insert into sale (id, creat_time, total_price
+      )
+    values (#{id,jdbcType=BIGINT}, #{creatTime,jdbcType=TIMESTAMP}, #{totalPrice,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dog.doger.app.business.entity.Sale">
+    insert into sale
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="creatTime != null">
+        creat_time,
+      </if>
+      <if test="totalPrice != null">
+        total_price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="creatTime != null">
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalPrice != null">
+        #{totalPrice,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dog.doger.app.business.entity.Sale">
+    update sale
+    <set>
+      <if test="creatTime != null">
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalPrice != null">
+        total_price = #{totalPrice,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dog.doger.app.business.entity.Sale">
+    update sale
+    set creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      total_price = #{totalPrice,jdbcType=REAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
