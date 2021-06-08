@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="../../util/baseTop.js" type="text/javascript" charset="utf-8"></script>
+		<!-- <link rel="stylesheet" type="text/css" href="../../component/layer/admin/admin.css" /> -->
+		<link rel="stylesheet" type="text/css" href="../../css/login/login.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+		<style type="text/css">
+			.content {
+
+				height: 100%;
+				/* border: solid 1px red; */
+				overflow: scroll;
+				overflow-x: hidden;
+				padding: 0 20px;
+			}
+
+			.isMe {
+				color: red;
+			}
+
+			.message {
+				border: solid 2px black;
+				display: inline-block;
+			}
+
+			.myMessage {
+				text-align: right;
+			}
+
+			.div-inline {
+				display: inline-block
+			}
+
+			.array {
+				width: 80%;
+				float: left;
+			}
+
+			.bold {
+				width: 19%;
+				height: 36px;
+				margin-top: 1px;
+				margin-left: 1%;
+				font-weight: 500;
+			}
+		</style>
+	</head>
+	<body layadmin-themealias="classic-black-header">
+		<div id="login">
+			<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login">
+				<div class="layadmin-user-login-main">
+					<div class="layui-form-item">
+						<button class="layui-btn layui-btn-radius layui-btn-fluid" @click="toIndex" lay-submit="" lay-filter="LAY-user-login-submit">首
+							页
+						</button>
+					</div>
+					<div class="layadmin-user-login-box layadmin-user-login-header">
+						<h2>收银台</h2>
+						<p>===================================</p>
+					</div>
+					<div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+
+						<div class="layui-form-item">
+							<button class="layui-btn-primary:hover  layui-btn-fluid">条 码 商 品 详 情</button>
+						</div>
+						<div v-for="(item,index) in cargoList" :key="index">
+							<!-- s内容 -->
+							<div class="layui-form-item">
+								<label class="layadmin-user-login-icon layui-icon layui-icon-about" for="LAY-user-login-tooid">
+									<p>{{index+1}}</p>
+								</label>
+								<!-- <input type="text" @keyup.enter="searchCargo()"  @input="searchCargo(index,$event)" v-bind:value="item.cargoNo"
+								 name="cargoNo" id="LAY-user-login-cargoNo" maxlength="100" lay-verify="required" placeholder="扫描商品条码" class="layui-input"> -->
+								<input type="text" @keyup.enter="searchCargo(index,$event)" v-bind:value="item.cargoNo" name="cargoNo" :id="'cargoNo' + index"
+								 maxlength="100" lay-verify="required" placeholder="扫描商品条码" class="layui-input array">
+								 
+								<button :id="'delCargo' + index" @click="toDelCargo(index)"  class="layui-btn layui-btn-fluid bold">删除</button>
+
+								<input type="text" v-bind:value="item.cargoName" name="cargoName" id="LAY-user-login-cargoName" maxlength="100"
+								 lay-verify="required" placeholder="商品名称" class="layui-input">
+
+								<input type="number" @input="modifyCargoPrice(index,$event)" 　v-bind:value="item.salPrice" name="salPrice" id="LAY-user-login-salPrice"
+								 maxlength="100" lay-verify="required" placeholder="商品价格" class="layui-input">
+
+								<input type="number" :id="'cargoNum' + index" @input="modifyCargoNum(index,$event)" 　v-bind:value="item.num" name="num"
+								 maxlength="100" lay-verify="required" placeholder="商品数量" class="layui-input">
+							</div>
+							<!-- e内容 -->
+						</div>
+
+						<div class="layui-form-item">
+							<button class="layui-btn-primary:hover  layui-btn-fluid">非 条 码 商 品 金 额</button>
+						</div>
+						<div class="layui-form-item">
+							<label class="layadmin-user-login-icon layui-icon layui-icon-about" for="LAY-user-login-noCodePrice"></label>
+							<input type="number" v-model="noCodePrice" name="noCodePrice" id="LAY-user-login-noCodePrice" maxlength="18"
+							 lay-verify="required" placeholder="非条码商品金额" class="layui-input">
+						</div>
+
+						<div class="layui-form-item">
+							<button class="layui-btn-primary:hover  layui-btn-fluid">洗 护 金 额</button>
+						</div>
+						<div class="layui-form-item">
+							<label class="layadmin-user-login-icon layui-icon layui-icon-about" for="LAY-user-login-washPrice"></label>
+							<input type="number" v-model="washPrice" name="washPrice" id="LAY-user-login-washPrice" maxlength="18" lay-verify="required"
+							 placeholder="洗护金额" class="layui-input">
+						</div>
+
+						<div class="layui-form-item">
+							<button class="layui-btn layui-btn-fluid" @click="toTotalPrice">收
+								银</button>
+						</div>
+
+						<div style="margin-top: 55px;display: none;" id="total_div">
+							<div class="layui-form-item">
+								<button style="background:#00aaff" class="layui-btn-primary:hover  layui-btn-fluid">应 收 金 额</button>
+							</div>
+							<div class="layui-form-item" style="background:#00aaff">
+								<label style="background:#00aaff" class="layadmin-user-login-icon layui-icon layui-icon-about" for="LAY-user-login-totalPrice"></label>
+								<input readonly="readonly" style="background:#00aaff" type="text" v-model="totalPrice" name="totalPrice" id="LAY-user-login-totalPrice"
+								 maxlength="18" lay-verify="required" placeholder="应收金额" class="layui-input">
+							</div>
+							
+							
+							<div class="layui-form-item" style="margin-top: 35px">
+								<button class="layui-btn layui-btn-fluid" @click="toTotalAccount">记 帐</button>
+							</div>
+						</div>
+						
+						
+
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="../../util/request.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			// demo data
+			var cargoList = [{ //发送的消息格式
+				cargoNo: '', //发送类型
+				cargoName: '',
+				salPrice: '',
+				num: 1
+			}];
+			var vueObj = new Vue({
+				el: '#login',
+				data: {
+					cargoList: cargoList,
+					washPrice: 0,
+					noCodePrice: 0,
+					totalPrice: 0
+				},
+				created() {},
+				mounted() {
+					let that = this;
+				},
+				methods: {
+					modifyCargoNum(index, event) {
+
+						var cargoNnum = event.currentTarget.value;
+						for (var i = 0; i < this.cargoList.length; i++) {
+							var itemCargo = this.cargoList[i];
+							if (i == index) {
+								itemCargo.num = cargoNnum;
+								break;
+							}
+						}
+					},
+					modifyCargoPrice(index, event) {
+
+						var cargoPrice = event.currentTarget.value;
+						for (var i = 0; i < this.cargoList.length; i++) {
+							var itemCargo = this.cargoList[i];
+							if (i == index) {
+								itemCargo.salPrice = cargoPrice;
+								break;
+							}
+						}
+					},
+					toDelCargo(index){
+						var newCargoList = [];
+						for (var i = 0; i < this.cargoList.length; i++) {
+							var itemCargo = this.cargoList[i];
+							if (i == index) {
+								continue;
+							}else{
+								newCargoList.push(itemCargo);
+							}
+						}
+						this.cargoList = newCargoList;
+					},
+					searchCargo(index, event) {
+
+						var cargoNo = event.currentTarget.value;
+						this.toSearchCargo(index, cargoNo);
+					},
+					toSearchCargo(index, cargoNo) {
+						api.toSearchCargo({
+							data: {
+								"cargoNo": cargoNo
+							}
+						}).then((res) => {
+							if (res.code == 0) {
+								this.currentCargo(index, res.data);
+								this.nextCargo(index);
+							}
+						}).catch((err) => {
+							layer.msg(err.msg);
+						});
+					},
+					currentCargo(index, data) {
+						for (var i = 0; i < this.cargoList.length; i++) {
+							var itemCargo = this.cargoList[i];
+							if (i == index) {
+								itemCargo.cargoName = data.cargoName;
+								itemCargo.cargoNo = data.cargoNo;
+								itemCargo.salPrice = data.salPrice;
+								break;
+							}
+						}
+					},
+					nextCargo(index) {
+						this.cargoList.push({
+							cargoNo: '',
+							cargoName: '',
+							salPrice: '',
+							num: 1
+						});
+						var nextIndex = index + 1;
+						setTimeout(function() { //因为vue页面使用jquery在DOM未渲染完成之前事件绑定不上，所有需要延时（jquery不适合在vue页面中使用，但查了好多资料，没找到合适的vux获取input焦点的代码，就果断选择了这个）
+								var nextCargo_input = document.getElementById('cargoNo' + nextIndex);
+								nextCargo_input.focus();
+							},
+							300)
+					},
+					toTotalPrice() {
+						if (!this.washPrice) {
+							this.washPrice = 0;
+						}
+						if (!this.noCodePrice) {
+							this.noCodePrice = 0;
+						}
+						var total = 0;
+						for (var i = 0; i < this.cargoList.length; i++) {
+							var itemCargo = this.cargoList[i];
+							if (itemCargo.cargoNo != '') {
+								var itemCargoPrice = itemCargo.salPrice * itemCargo.num;
+								total += itemCargoPrice;
+							}
+
+						}
+						total = parseFloat(this.washPrice) + parseFloat(total);
+						total = parseFloat(this.noCodePrice) + parseFloat(total);
+						this.totalPrice = total;
+						document.getElementById('total_div').style.display = "block";
+						
+					},
+					toTotalAccount(){
+						if(this.totalPrice != 0){
+							this.toSale();
+						}
+					},
+					toSale(){
+						api.toSale({
+							data: {
+								"cargosJson":  JSON.stringify(this.cargoList),
+								"washPrice": this.washPrice,
+								"noCodePrice": this.noCodePrice,
+								"totalPrice": this.totalPrice,
+							}
+						}).then((res) => {
+							if (res.code == 0) {
+								layer.msg("记帐成功！");
+							}
+						}).catch((err) => {
+							layer.msg(err.msg);
+						});
+					},
+					toIndex() {
+						window.location.href = './index.html';
+					}
+				},
+			});
+		</script>
+	</body>
+</html>
