@@ -79,9 +79,9 @@ public class CargoServiceImpl implements CargoService {
     }
 
     @Override
-    public ApiResult cargo(Cargo cargo) {
+    public ApiResult cargo(String cargoNo) {
         try {
-            Cargo existCargo = cargoMapper.findByCargoNo(cargo.getCargoNo());
+            Cargo existCargo = cargoMapper.findByCargoNo(cargoNo);
             if (existCargo == null) {
                 throw new Exception("查找该条码商品失败！");
             }

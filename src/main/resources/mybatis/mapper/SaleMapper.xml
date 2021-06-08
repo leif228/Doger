@@ -20,12 +20,20 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.dog.doger.app.business.entity.Sale">
+    <selectKey  resultType="java.lang.Long" order="AFTER"
+                keyProperty="id">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
     insert into sale (id, creat_time, total_price
       )
     values (#{id,jdbcType=BIGINT}, #{creatTime,jdbcType=TIMESTAMP}, #{totalPrice,jdbcType=REAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.dog.doger.app.business.entity.Sale">
+    <selectKey  resultType="java.lang.Long" order="AFTER"
+                keyProperty="id">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
     insert into sale
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

@@ -13,7 +13,7 @@ public interface CargoService {
 
     ApiResult updateCargo(Cargo cargo);
 
-    ApiResult cargo(Cargo cargo);
+    ApiResult cargo(String cargoNo);
 
     ApiResult cargos();
 

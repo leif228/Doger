@@ -25,8 +25,8 @@ public class CargoController {
     }
 
     @PostMapping("/cargo")
-    public ApiResult cargo(@RequestBody Cargo cargo) {
-        return cargoService.cargo(cargo);
+    public ApiResult cargo(String cargoNo) {
+        return cargoService.cargo(cargoNo);
     }
 
     @PostMapping("/cargos")
