@@ -9,6 +9,7 @@ import com.dog.doger.app.business.entity.Cargo;
 import com.dog.doger.app.business.entity.Sale;
 import com.dog.doger.app.business.entity.SaleDetail;
 import com.dog.doger.app.business.entity.Stockpile;
+import com.dog.doger.app.business.enums.WashNocodeType;
 import com.dog.doger.app.business.repository.CargoMapper;
 import com.dog.doger.app.business.repository.SaleDetailMapper;
 import com.dog.doger.app.business.repository.SaleMapper;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -61,12 +63,19 @@ public class SaleServiceImpl implements SaleService {
                     saleDetail.setPrice(jsonArray.get(i).getSalPrice());
 
                     saleDetailMapper.insertSelective(saleDetail);
+
+                    //修改库存
+                    Stockpile stockpile = stockpileMapper.findByCargoId(existCargo.getId());
+                    stockpile.setNum(stockpile.getNum() - jsonArray.get(i).getNum());
+                    stockpile.setLastLeaveDate(DateUtil.getDate());
+
+                    stockpileMapper.updateByPrimaryKeySelective(stockpile);
                 }
             }
 
             Float wp = Float.valueOf(washPrice);
             if(wp != 0f){
-                Cargo existCargo = cargoMapper.findByCargoNo("111111");
+                Cargo existCargo = cargoMapper.findByCargoNo(WashNocodeType.WASH.getCode());
                 if (existCargo != null) {
                     SaleDetail saleDetail = new SaleDetail();
                     saleDetail.setSaleId(sale.getId());
@@ -80,7 +89,7 @@ public class SaleServiceImpl implements SaleService {
 
             Float np = Float.valueOf(noCodePrice);
             if(np != 0f){
-                Cargo existCargo = cargoMapper.findByCargoNo("000000");
+                Cargo existCargo = cargoMapper.findByCargoNo(WashNocodeType.NO_CODE.getCode());
                 if (existCargo != null) {
                     SaleDetail saleDetail = new SaleDetail();
                     saleDetail.setSaleId(sale.getId());
@@ -96,6 +105,25 @@ public class SaleServiceImpl implements SaleService {
         } catch (Exception e) {
             //TODO 设置try catch后事务回滚方法
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ApiResult.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResult saleState(String st, String et) {
+        try {
+            Date stime = DateUtil.stringToDate(st);
+            Date etime = DateUtil.stringToDate(et);
+
+            List<Sale> list = saleMapper.findByTime(stime,etime);
+
+            Float total = 0f;
+            for(Sale sale : list){
+                total += sale.getTotalPrice();
+            }
+
+            return ApiResult.success(total);
+        } catch (Exception e) {
             return ApiResult.error(e.getMessage());
         }
     }

@@ -23,4 +23,10 @@ public class SaleController {
         return saleService.sale(cargosJson, washPrice, noCodePrice, totalPrice);
     }
 
+    @PostMapping("/saleState")
+    public ApiResult saleState(@RequestParam(value = "st") String st,
+                                     @RequestParam(value = "et") String et) {
+        return saleService.saleState(st, et);
+    }
+
 }

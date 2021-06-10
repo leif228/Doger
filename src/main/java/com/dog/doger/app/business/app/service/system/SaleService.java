@@ -7,4 +7,6 @@ public interface SaleService {
 
 
     ApiResult sale(String cargosJson, String washPrice, String noCodePrice, String totalPrice);
+
+    ApiResult saleState(String st, String et);
 }

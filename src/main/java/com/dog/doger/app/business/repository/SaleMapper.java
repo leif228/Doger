@@ -3,6 +3,9 @@ package com.dog.doger.app.business.repository;
 
 import com.dog.doger.app.business.entity.Sale;
 
+import java.util.Date;
+import java.util.List;
+
 public interface SaleMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -15,4 +18,6 @@ public interface SaleMapper {
     int updateByPrimaryKeySelective(Sale record);
 
     int updateByPrimaryKey(Sale record);
+
+    List<Sale> findByTime(Date stime, Date etime);
 }

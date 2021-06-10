@@ -76,4 +76,12 @@
       total_price = #{totalPrice,jdbcType=REAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <select id="findByTime" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sale
+    where creat_time BETWEEN #{stime} AND #{etime}
+  </select>
 </mapper>
